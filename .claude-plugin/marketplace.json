@@ -14,7 +14,7 @@
       "version": "1.0.0",
       "source": "./",
       "category": "workflow",
-      "homepage": "https://github.com/ALVSR7/pantheon",
+      "homepage": "https://github.com/ALVSR7/Pantheon-Skills",
       "tags": ["workflow", "orchestration", "model-routing", "codex", "subagents"]
     }
   ]

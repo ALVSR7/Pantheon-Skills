@@ -40,9 +40,9 @@ Every skill degrades gracefully: without the Codex CLI the bulk lane is skipped.
 ### Option A: copy the skills (simplest)
 
 ```bash
-git clone https://github.com/ALVSR7/pantheon.git
+git clone https://github.com/ALVSR7/Pantheon-Skills.git
 mkdir -p ~/.claude/skills
-cp -R pantheon/skills/pantheon-* ~/.claude/skills/
+cp -R Pantheon-Skills/skills/pantheon-* ~/.claude/skills/
 ```
 
 Restart Claude Code (or start a new session). Invoke with `/pantheon-fable`, `/pantheon-opus`, or `/pantheon-sonnet`.
@@ -50,7 +50,7 @@ Restart Claude Code (or start a new session). Invoke with `/pantheon-fable`, `/p
 ### Option B: install as a plugin
 
 ```
-/plugin marketplace add ALVSR7/pantheon
+/plugin marketplace add ALVSR7/Pantheon-Skills
 /plugin install pantheon@pantheon
 ```
 
