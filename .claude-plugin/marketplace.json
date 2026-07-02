@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "pantheon",
+  "metadata": {
+    "description": "Pantheon: model-routing skills for Claude Code, one kickoff skill per lead model (Fable, Opus, Sonnet), with an optional Codex (gpt-5.5) bulk lane."
+  },
+  "owner": {
+    "name": "ALVSR7"
+  },
+  "plugins": [
+    {
+      "name": "pantheon",
+      "description": "Model-routing kickoff skills: pantheon-fable, pantheon-opus, pantheon-sonnet. Route judgment to your lead model, bulk to Codex, and gate shipping on independent review.",
+      "version": "1.0.0",
+      "source": "./",
+      "category": "workflow",
+      "homepage": "https://github.com/ALVSR7/pantheon",
+      "tags": ["workflow", "orchestration", "model-routing", "codex", "subagents"]
+    }
+  ]
+}
