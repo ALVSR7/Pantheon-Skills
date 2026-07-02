@@ -1,6 +1,8 @@
 # Pantheon
 
-Model-routing skills for [Claude Code](https://claude.com/claude-code). One idea: your lead model's tokens are the scarcest resource in your setup, so spend them on judgment and route everything else to the model that's actually right for it.
+Model-routing skills for [Claude Code](https://claude.com/claude-code). 
+
+One idea: your lead model's tokens are the scarcest resource in your setup, so spend them on judgment and route everything else to the model that's actually right for it.
 
 Pantheon ships three kickoff skills, one per lead model. Each is a checklist your session runs at the start of a project or multi-step build: announce the work split, route by strength, escalate deliberately, and gate anything that ships on an independent review.
 
