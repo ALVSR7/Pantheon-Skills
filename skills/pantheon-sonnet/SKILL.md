@@ -71,7 +71,7 @@ escalation, bulk, and review lanes.
   or any data-crunching sweep → gpt-5.5 via the codex plugin's rescue agent
   or the raw template below.
 - **Reviews are a different model by definition**: the final-gate review
-  call goes to an opus/fable subagent or Codex — self-review never
+  call goes to an opus/fable subagent or Codex; self-review never
   satisfies the gate.
 - **Capability preflight** (once, at kickoff): check `codex --version`; if
   a lane is unavailable, say so in the split and name what absorbs it.
