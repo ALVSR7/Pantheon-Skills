@@ -111,7 +111,7 @@ Each skill ends with an "Adapting this skill" section: swap the roster for your 
 
 ## Credits
 
-Built by [ALVSR7](https://github.com/ALVSR7). The workflow was developed and refined in daily use across Claude Fable, Opus, Sonnet, and OpenAI Codex (gpt-5.5). These skills were authored with Claude Code running Fable and reviewed locally with Codex before publishing.
+Built by [ALVSR7](https://github.com/ALVSR7). The routing shape was inspired by [Theo (t3.gg) sharing his CLAUDE.md structure](https://x.com/theo/status/2072482460122964067): Fable leading, Codex handling the work it's genuinely better at. That idea got taken further here into installable skills, refined in daily use across Claude Fable, Opus, Sonnet, and OpenAI Codex (gpt-5.5). These skills were authored with Claude Code running Fable and reviewed locally with Codex before publishing.
 
 ## License
 
