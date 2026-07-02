@@ -6,7 +6,7 @@ Pantheon ships three kickoff skills, one per lead model. Each is a checklist you
 
 ## Why this saves tokens (and produces better work)
 
-Running everything on your strongest model burns your subscription on work a cheaper model does just as well. Running everything on a cheap model ships mediocre judgment. The fix is a roster:
+Running everything on your strongest model burns your subscription on work another lane handles just as well. Running everything on a lower tier ships mediocre judgment. The fix is a roster:
 
 | Model | Best at | Worst use of it |
 |-------|---------|-----------------|
@@ -15,12 +15,12 @@ Running everything on your strongest model burns your subscription on work a che
 | Sonnet | day-to-day building, parallel legwork | final calls on ambiguous, expensive decisions |
 | gpt-5.5 (via the OpenAI Codex CLI) | clear-spec bulk implementation, independent reviews | taste-critical UI and copy |
 
-The Codex lane is the big cost lever: gpt-5.5 bills through your OpenAI plan, so heavy implementation work stops consuming Claude tokens entirely. It also gives you something a same-model review can't: a genuinely independent second opinion from a different frontier model.
+The Codex lane is the big cost lever: Codex usage is metered against your ChatGPT plan or OpenAI API credits, so heavy implementation work moves off your Claude quota (Claude still spends orchestration and review tokens around it). It's a separate budget rather than a discount, and it buys something a same-model review can't: a genuinely independent second opinion from a different frontier model. If you want the bulk lane cheaper still, route it to a smaller Codex model like gpt-5.4-mini with `-m`.
 
 Three rules hold the system together:
 
 1. **Intelligence, then taste, then cost.** When routes conflict for anything that ships, pick in that order. Redoing cheap output with a smarter model costs less than shipping the wrong thing.
-2. **Announce the split.** Before substantial work starts, the lead model says in one paragraph what it keeps, what it escalates, and what it routes out, so you can veto the plan in five seconds.
+2. **Announce the split.** Before substantial work starts, the lead model says in one paragraph what it keeps, what it escalates, and what it routes out, so you can veto the plan in five seconds. (Note "escalates": redoing a lower tier's output with a smarter model costs less than shipping the wrong thing.)
 3. **Independent review before shipping.** Findings get presented verbatim and the agent stops and asks which to fix. Auto-applied review findings defeat the point of review.
 
 ## The three skills
@@ -31,7 +31,7 @@ Pick the one matching your session's model. Each knows about the others and tell
 - **`/pantheon-opus`**: the lead does taste and user-facing work; frontier-difficulty problems escalate up to a Fable subagent when available; bulk goes to Codex.
 - **`/pantheon-sonnet`**: the lead does day-to-day building; hard problems and final reviews escalate to Opus or Fable; bulk goes to Codex. Includes the escalation discipline that makes a Sonnet-led setup work.
 
-Every skill degrades gracefully: without the Codex CLI the bulk lane is skipped, and without Fable on your plan the escalation targets fall back to Opus.
+Every skill degrades gracefully: without the Codex CLI the bulk lane is skipped. Without Fable on your plan, Sonnet-led sessions escalate to Opus, and Opus-led sessions fall back to self-review plus the Codex lane.
 
 ## Install
 
@@ -39,7 +39,8 @@ Every skill degrades gracefully: without the Codex CLI the bulk lane is skipped,
 
 ```bash
 git clone https://github.com/ALVSR7/pantheon.git
-cp -r pantheon/skills/pantheon-* ~/.claude/skills/
+mkdir -p ~/.claude/skills
+cp -R pantheon/skills/pantheon-* ~/.claude/skills/
 ```
 
 Restart Claude Code (or start a new session). Invoke with `/pantheon-fable`, `/pantheon-opus`, or `/pantheon-sonnet`.
@@ -51,7 +52,7 @@ Restart Claude Code (or start a new session). Invoke with `/pantheon-fable`, `/p
 /plugin install pantheon@pantheon
 ```
 
-Plugin installs namespace the skills (for example `/pantheon:pantheon-fable`).
+Then run `/reload-plugins` (or restart Claude Code) so the skills register in the current session. Plugin installs namespace the skills, so invoke them as `/pantheon:pantheon-fable`, `/pantheon:pantheon-opus`, and `/pantheon:pantheon-sonnet`.
 
 ### Optional: the Codex lane
 
@@ -71,9 +72,9 @@ Optionally add the official Codex plugin for Claude Code, which provides the res
 
 One gotcha the skills already know about: headless `codex exec` calls from an agent can hang forever waiting on interactive MCP auth. The skills pass `-c mcp_servers={}` to avoid it; keep that flag if you script your own calls.
 
-### Make it automatic (recommended)
+### Make it a habit (recommended)
 
-Skills fire when invoked. To get the routing pre-flight on every session without remembering to type it, add a SessionStart hook in `~/.claude/settings.json`:
+Skills fire when invoked. A SessionStart hook can't invoke a skill for you, but it can put the reminder in front of Claude at the start of every session, which in practice is enough for the agent to run the kickoff itself. Add this to `~/.claude/settings.json` (merge into existing hooks; requires `jq`, available via `brew install jq`):
 
 ```json
 {
@@ -83,7 +84,7 @@ Skills fire when invoked. To get the routing pre-flight on every session without
         "hooks": [
           {
             "type": "command",
-            "command": "jq -n '{hookSpecificOutput:{hookEventName:\"SessionStart\",additionalContext:\"At the start of any new project or multi-step build, invoke the pantheon kickoff skill matching the session model (/pantheon-fable, /pantheon-opus, or /pantheon-sonnet).\"}}'"
+            "command": "jq -n '{hookSpecificOutput:{hookEventName:\"SessionStart\",additionalContext:\"At the start of any new project or multi-step build, invoke the pantheon kickoff skill matching the session model: /pantheon-fable, /pantheon-opus, or /pantheon-sonnet (plugin installs: /pantheon:pantheon-fable etc).\"}}'"
           }
         ]
       }
@@ -108,7 +109,7 @@ Each skill ends with an "Adapting this skill" section: swap the roster for your 
 
 ## Credits
 
-Built by [ALVSR7](https://github.com/ALVSR7). The workflow was developed and refined in daily use across Claude Fable, Opus, Sonnet, and OpenAI Codex (gpt-5.5), and these skills were authored with Claude Code running Fable, then reviewed by Codex before publishing.
+Built by [ALVSR7](https://github.com/ALVSR7). The workflow was developed and refined in daily use across Claude Fable, Opus, Sonnet, and OpenAI Codex (gpt-5.5). These skills were authored with Claude Code running Fable and reviewed locally with Codex before publishing.
 
 ## License
 

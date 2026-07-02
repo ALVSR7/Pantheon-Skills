@@ -55,10 +55,17 @@ a wrong call or mediocre work.
 | Cheap parallel legwork (searches, mechanical edits with a tight spec) | **sonnet** subagents, low effort | Agent/Workflow param |
 | Anything | **Skip haiku** in this workflow | n/a |
 
-Codex CLI notes (only if installed; see the repo README for setup): headless
-`codex exec` runs can hang forever waiting on MCP auth, so add
-`-c mcp_servers={}`; outside a git repo add `--skip-git-repo-check`; use
-`-s read-only` for analysis and review prompts.
+Codex CLI notes (only if installed; see the repo README for setup). Raw
+template, with the model pinned so a different local default can't silently
+reroute the lane:
+
+```bash
+codex exec -m gpt-5.5 -s read-only -c mcp_servers={} "<self-contained prompt>"
+```
+
+Headless `codex exec` runs can hang forever waiting on MCP auth, which is
+what `-c mcp_servers={}` prevents; outside a git repo add
+`--skip-git-repo-check`; drop `-s read-only` only for write-capable tasks.
 
 ## Escalation discipline (the Sonnet-specific skill)
 
