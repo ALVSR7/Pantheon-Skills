@@ -1,7 +1,7 @@
 {
   "name": "pantheon",
   "description": "Model-routing kickoff skills for Claude Code: pantheon-fable, pantheon-opus, and pantheon-sonnet. The lead model does the judgment, other lanes take the volume on separate quotas, Codex (gpt-5.5) handles bulk implementation, and an independent review gates anything that ships.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "ALVSR7"
   },

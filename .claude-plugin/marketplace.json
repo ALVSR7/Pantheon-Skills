@@ -11,7 +11,7 @@
     {
       "name": "pantheon",
       "description": "Model-routing kickoff skills: pantheon-fable, pantheon-opus, pantheon-sonnet. Route judgment to your lead model, bulk to Codex, and gate shipping on independent review.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./",
       "category": "workflow",
       "homepage": "https://github.com/ALVSR7/Pantheon-Skills",

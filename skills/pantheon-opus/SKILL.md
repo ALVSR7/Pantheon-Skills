@@ -1,6 +1,6 @@
 ---
 name: pantheon-opus
-version: 1.0.0
+version: 1.1.0
 description: |
   Model-routing kickoff for sessions led by Claude Opus. Opus does the taste
   and user-facing work, escalates frontier-difficulty calls to a stronger
@@ -61,6 +61,32 @@ it. Routine work stays with you; you are the right model for most of it.
 When escalating, send full context (what you tried, what failed, the
 constraints), because a cold summary wastes the stronger model on
 re-discovery.
+
+## Execution contract (routing is tool calls, not prose)
+
+The failure mode this section exists to kill: announcing a split, then doing
+everything inline anyway. **Routing only happened if a tool call happened.**
+Taste and user-facing work staying with you is correct; this contract binds
+the escalation, bulk, and review lanes.
+
+- **Escalation is a tool call too**: when the split says a problem goes up,
+  spawn the stronger subagent (Agent tool, `model: 'fable'` when available,
+  full context in the prompt). Two failed attempts on a bug with no
+  escalation call is a violation of this skill.
+- **Thresholds that force the bulk lane** (when the Codex CLI exists):
+  clear-spec mechanical work touching 5+ files, 100+ lines of boilerplate,
+  or any data-crunching sweep → gpt-5.5. Inline is the exception and
+  requires a one-line justification in the split.
+- **The actual invocations**: gpt-5.5 via the codex plugin's rescue agent or
+  the raw template below; escalation and legwork via the Agent tool with
+  `model: 'fable'` / `model: 'sonnet'`.
+- **Capability preflight** (once, at kickoff): `codex --version` via the
+  shell; if a lane is unavailable, say so in the split and name what
+  absorbs it.
+- **Route or justify**: every task the split assigned elsewhere either
+  produces its tool call or gets one line explaining why it stayed inline.
+- **Close the loop**: the final summary reports actual routing (what ran
+  where, which model produced what).
 
 Codex CLI notes (only if installed; see the repo README for setup). Raw
 template, with the model pinned so a different local default can't silently

@@ -1,6 +1,6 @@
 ---
 name: pantheon-fable
-version: 1.0.0
+version: 1.1.0
 description: |
   Model-routing kickoff for sessions led by Claude Fable (or your strongest
   available Claude model). The lead model does the judgment, architecture, and
@@ -54,6 +54,31 @@ model costs less than shipping the wrong thing.
 | Parallel user-facing workstreams needing taste while you're saturated | **opus** subagents (`model: 'opus'`) | Agent/Workflow param |
 | Medium parallel tasks, thin forwarder/orchestration hops | **sonnet** (`model: 'sonnet'`, often low effort) | Agent/Workflow param |
 | Anything | **Skip haiku** in this workflow | n/a |
+
+## Execution contract (routing is tool calls, not prose)
+
+The failure mode this section exists to kill: announcing a split, then doing
+everything inline anyway. **Routing only happened if a tool call happened.**
+Judgment, architecture, and taste work staying with you is correct; this
+contract binds the bulk, parallel, and review lanes.
+
+- **Thresholds that force the bulk lane** (when the Codex CLI exists):
+  clear-spec mechanical work touching 5+ files, 100+ lines of boilerplate or
+  repetitive edits, or any data-crunching sweep → gpt-5.5. Doing it inline
+  is the exception and requires a one-line justification in the split.
+- **Parallel threshold**: 2+ independent workstreams → subagents, one Agent
+  call per stream, sent in the same message so they run concurrently.
+- **The actual invocations** (exact shapes, not paraphrases): gpt-5.5 via
+  the codex plugin's rescue agent, or the raw template below; Claude
+  subagents via the Agent tool with `model: 'opus'` (taste workstreams) or
+  `model: 'sonnet'` (medium tasks, low effort).
+- **Capability preflight** (once, at kickoff): `codex --version` via the
+  shell. If a lane is unavailable, say so in the split and name what
+  absorbs it. A missing lane never silently becomes "I'll do it all myself."
+- **Route or justify**: every task the split assigned elsewhere either
+  produces its tool call or gets one line explaining why it stayed inline.
+- **Close the loop**: the final summary reports actual routing (what ran
+  where, which model produced what), so the pantheon is visible working.
 
 Codex CLI notes (only if installed; see the repo README for setup). Raw
 template, with the model pinned so a different local default can't silently

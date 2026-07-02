@@ -1,6 +1,6 @@
 ---
 name: pantheon-sonnet
-version: 1.0.0
+version: 1.1.0
 description: |
   Model-routing kickoff for sessions led by Claude Sonnet. Sonnet does the
   user-facing and moderate work, escalates hard problems and final reviews to
@@ -54,6 +54,31 @@ a wrong call or mediocre work.
 | Clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-5.5** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
 | Cheap parallel legwork (searches, mechanical edits with a tight spec) | **sonnet** subagents, low effort | Agent/Workflow param |
 | Anything | **Skip haiku** in this workflow | n/a |
+
+## Execution contract (routing is tool calls, not prose)
+
+The failure mode this section exists to kill: announcing a split, then doing
+everything inline anyway. **Routing only happened if a tool call happened.**
+Day-to-day building staying with you is correct; this contract binds the
+escalation, bulk, and review lanes.
+
+- **Escalation is a tool call**: when the split (or the escalation
+  discipline below) says a problem goes up, spawn the subagent (Agent tool,
+  `model: 'opus'` or `'fable'`, full context in the prompt). Two failed
+  attempts with no escalation call is a violation of this skill.
+- **Thresholds that force the bulk lane** (when the Codex CLI exists):
+  clear-spec mechanical work touching 5+ files, 100+ lines of boilerplate,
+  or any data-crunching sweep → gpt-5.5 via the codex plugin's rescue agent
+  or the raw template below.
+- **Reviews are a different model by definition**: the final-gate review
+  call goes to an opus/fable subagent or Codex — self-review never
+  satisfies the gate.
+- **Capability preflight** (once, at kickoff): check `codex --version`; if
+  a lane is unavailable, say so in the split and name what absorbs it.
+- **Route or justify**: every task the split assigned elsewhere either
+  produces its tool call or gets one line explaining why it stayed inline.
+- **Close the loop**: the final summary reports actual routing (what ran
+  where, which model produced what).
 
 Codex CLI notes (only if installed; see the repo README for setup). Raw
 template, with the model pinned so a different local default can't silently
