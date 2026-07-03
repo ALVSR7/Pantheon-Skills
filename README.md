@@ -1,4 +1,7 @@
-# Pantheon
+# Pantheon Skills
+
+<img width="1920" height="1080" alt="Linkedin post" src="https://github.com/user-attachments/assets/365d508b-3782-4407-8e6c-a2130249f324" />
+
 
 Model-routing skills for [Claude Code](https://claude.com/claude-code). 
 
