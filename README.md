@@ -86,7 +86,7 @@ Skills fire when invoked. A SessionStart hook can't invoke a skill for you, but 
         "hooks": [
           {
             "type": "command",
-            "command": "jq -n '{hookSpecificOutput:{hookEventName:\"SessionStart\",additionalContext:\"At the start of any new project or multi-step build, invoke the pantheon kickoff skill matching the session model: /pantheon-fable, /pantheon-opus, or /pantheon-sonnet (plugin installs: /pantheon:pantheon-fable etc).\"}}'"
+            "command": "jq -n '{hookSpecificOutput:{hookEventName:\"SessionStart\",additionalContext:\"At the start of any new project or multi-step build, invoke the pantheon kickoff skill matching the session model: /pantheon-fable, /pantheon-opus, or /pantheon-sonnet (plugin installs: /pantheon:pantheon-fable etc). Invoke means an actual Skill tool call that loads the SKILL.md; running the checklist from memory does not count. Re-invoke after every resume or compaction, since the contract text does not survive either.\"}}'"
           }
         ]
       }

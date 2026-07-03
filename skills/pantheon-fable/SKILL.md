@@ -1,6 +1,6 @@
 ---
 name: pantheon-fable
-version: 1.1.0
+version: 1.2.1
 description: |
   Model-routing kickoff for sessions led by Claude Fable (or your strongest
   available Claude model). The lead model does the judgment, architecture, and
@@ -77,8 +77,30 @@ contract binds the bulk, parallel, and review lanes.
   absorbs it. A missing lane never silently becomes "I'll do it all myself."
 - **Route or justify**: every task the split assigned elsewhere either
   produces its tool call or gets one line explaining why it stayed inline.
+- **Context budget overrides the taste exception**: once the budget trips,
+  every new multi-step workstream routes to a subagent, including
+  taste-critical ones (opus for taste, gpt-5.5 for bulk); you judge the
+  returned diff instead of making the edits yourself. You can't read the
+  statusline meter, so use the observable proxies: the budget trips when a
+  `<total_tokens>` or harness signal shows half the window spent, when the
+  session has already survived a resume or compaction, or after 3+ image
+  Reads. Past that point, "route or justify" loses its justify half:
+  inline execution is only for unavailable tooling or trivial single-step
+  edits. On any harness low-context warning, take nothing new inline and
+  tell the user the window is nearly spent.
+- **Media stays out of the main context**: surveying image files inline via
+  Read is the single fastest way to burn the window (a handful of hero PNGs
+  costs more than an entire refactor). Delegate image inspection to an opus
+  subagent whose return is bounded: paths inspected plus at most 5 verdict
+  bullets, no embedded image data, no transcription unless asked. Read at
+  most one image per final judgment decision.
 - **Close the loop**: the final summary reports actual routing (what ran
   where, which model produced what), so the pantheon is visible working.
+
+This contract only binds while it is in context. If you are reading this
+from memory or a hook summary rather than a freshly loaded skill file, stop
+and invoke /pantheon-fable via an actual Skill tool call now; the same
+applies after any resume or compaction, which silently drop this text.
 
 Codex CLI notes (only if installed; see the repo README for setup). Raw
 template, with the model pinned so a different local default can't silently
