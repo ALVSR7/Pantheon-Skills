@@ -1,6 +1,6 @@
 ---
 name: pantheon-opus
-version: 1.2.1
+version: 1.3.0
 description: |
   Model-routing kickoff for sessions led by Claude Opus. Opus does the taste
   and user-facing work, escalates frontier-difficulty calls to a stronger
@@ -26,7 +26,7 @@ escalate up instead of grinding.
 | fable | top intelligence and taste | Escalation target: frontier-difficulty problems, final-gate reviews (if your plan includes it) |
 | **opus (you)** | high intelligence and taste | The lead: UI, copy, architecture, reviews, most building |
 | sonnet | good all-rounder, fast | Medium parallel tasks, thin orchestration hops |
-| gpt-5.5 via Codex CLI | strong, bills on a separate plan | Bulk clear-spec implementation, independent reviews (optional lane) |
+| gpt-5.6-sol via Codex CLI | strong, bills on a separate plan | Bulk clear-spec implementation, independent reviews (optional lane) |
 | haiku | (skipped) | Not used in this workflow |
 
 Decision order when routes conflict for anything that ships:
@@ -50,7 +50,7 @@ a wrong call.
 |------|-------|-----------|
 | UI, copy, API design, reviews, normal architecture, most building | **You (Opus)** | Inline |
 | Frontier-difficulty problems: debugging unbroken after two real attempts, deep architecture tradeoffs, final-gate review of work that ships | **fable** subagent (`model: 'fable'`) when available; otherwise your best self-review plus the Codex lane | Agent/Workflow param; hand up full context, treat the verdict as senior |
-| Clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-5.5** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
+| Clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-5.6-sol** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
 | Medium parallel tasks, thin forwarder/orchestration hops | **sonnet** (`model: 'sonnet'`, often low effort) | Agent/Workflow param |
 | Anything | **Skip haiku** in this workflow | n/a |
 
@@ -75,9 +75,9 @@ the escalation, bulk, and review lanes.
   escalation call is a violation of this skill.
 - **Thresholds that force the bulk lane** (when the Codex CLI exists):
   clear-spec mechanical work touching 5+ files, 100+ lines of boilerplate,
-  or any data-crunching sweep → gpt-5.5. Inline is the exception and
+  or any data-crunching sweep → gpt-5.6-sol. Inline is the exception and
   requires a one-line justification in the split.
-- **The actual invocations**: gpt-5.5 via the codex plugin's rescue agent or
+- **The actual invocations**: gpt-5.6-sol via the codex plugin's rescue agent or
   the raw template below; escalation and legwork via the Agent tool with
   `model: 'fable'` / `model: 'sonnet'`.
 - **Capability preflight** (once, at kickoff): `codex --version` via the
@@ -110,17 +110,26 @@ and invoke /pantheon-opus via an actual Skill tool call now; the same
 applies after any resume or compaction, which silently drop this text.
 
 Codex CLI notes (only if installed; see the repo README for setup). Raw
-template, with the model pinned so a different local default can't silently
-reroute the lane:
+template, with the model and effort pinned so a different local default
+can't silently reroute the lane:
 
 ```bash
-codex exec -m gpt-5.5 -s read-only -c mcp_servers={} "<self-contained prompt>"
+codex exec -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
+  -c service_tier=priority -s read-only \
+  -c 'mcp_servers={}' "<self-contained prompt>"
 ```
 
 Headless `codex exec` runs can hang forever waiting on MCP auth, which is
-what `-c mcp_servers={}` prevents; outside a git repo add
+what `-c 'mcp_servers={}'` prevents; quote it, because an unquoted `{}` is
+eaten by zsh brace expansion before codex sees it. Outside a git repo add
 `--skip-git-repo-check`; drop `-s read-only` only for write-capable tasks.
-Faster runs: `-c model_reasoning_effort=low`; keep high effort for reviews.
+`service_tier=priority` is the "Fast" speed tier (1.5x speed for increased
+usage); it is the setting behind the desktop app's Speed control.
+
+For trivia, drop the effort with `-c model_reasoning_effort=low` rather than
+switching models. `gpt-5.6-sol` needs Codex CLI 0.144.0 or newer; older
+builds are rejected server-side even though the slug appears in their model
+list.
 
 ## Review gates
 

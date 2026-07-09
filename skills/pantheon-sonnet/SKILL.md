@@ -1,6 +1,6 @@
 ---
 name: pantheon-sonnet
-version: 1.2.1
+version: 1.3.0
 description: |
   Model-routing kickoff for sessions led by Claude Sonnet. Sonnet does the
   user-facing and moderate work, escalates hard problems and final reviews to
@@ -26,7 +26,7 @@ do yourself, what you escalate up, and what you route out.
 | fable | top intelligence and taste | Final-gate judgment, frontier-difficulty problems (if your plan includes it) |
 | opus | high intelligence and taste | Escalation target, reviews, hard user-facing work |
 | **sonnet (you)** | good all-rounder, fast | The lead: most building, UI, copy, moderate logic |
-| gpt-5.5 via Codex CLI | strong, bills on a separate plan | Bulk clear-spec implementation, independent reviews (optional lane) |
+| gpt-5.6-sol via Codex CLI | strong, bills on a separate plan | Bulk clear-spec implementation, independent reviews (optional lane) |
 | haiku | (skipped) | Not used in this workflow |
 
 Decision order when routes conflict for anything that ships:
@@ -51,7 +51,7 @@ a wrong call or mediocre work.
 | UI, copy, components, moderate features, refactors, day-to-day building | **You (Sonnet)** | Inline |
 | Hard problems: debugging unbroken after two real attempts, deep architecture tradeoffs, ambiguous decisions that matter | **opus** subagent (`model: 'opus'`), or `model: 'fable'` for the truly gnarly | Agent/Workflow param; hand up full context, treat the verdict as senior |
 | Final-gate review of anything that ships | **opus or fable** subagent | Same |
-| Clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-5.5** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
+| Clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-5.6-sol** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
 | Cheap parallel legwork (searches, mechanical edits with a tight spec) | **sonnet** subagents, low effort | Agent/Workflow param |
 | Anything | **Skip haiku** in this workflow | n/a |
 
@@ -68,7 +68,7 @@ escalation, bulk, and review lanes.
   attempts with no escalation call is a violation of this skill.
 - **Thresholds that force the bulk lane** (when the Codex CLI exists):
   clear-spec mechanical work touching 5+ files, 100+ lines of boilerplate,
-  or any data-crunching sweep → gpt-5.5 via the codex plugin's rescue agent
+  or any data-crunching sweep → gpt-5.6-sol via the codex plugin's rescue agent
   or the raw template below.
 - **Reviews are a different model by definition**: the final-gate review
   call goes to an opus/fable subagent or Codex; self-review never
@@ -103,16 +103,26 @@ and invoke /pantheon-sonnet via an actual Skill tool call now; the same
 applies after any resume or compaction, which silently drop this text.
 
 Codex CLI notes (only if installed; see the repo README for setup). Raw
-template, with the model pinned so a different local default can't silently
-reroute the lane:
+template, with the model and effort pinned so a different local default
+can't silently reroute the lane:
 
 ```bash
-codex exec -m gpt-5.5 -s read-only -c mcp_servers={} "<self-contained prompt>"
+codex exec -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
+  -c service_tier=priority -s read-only \
+  -c 'mcp_servers={}' "<self-contained prompt>"
 ```
 
 Headless `codex exec` runs can hang forever waiting on MCP auth, which is
-what `-c mcp_servers={}` prevents; outside a git repo add
+what `-c 'mcp_servers={}'` prevents; quote it, because an unquoted `{}` is
+eaten by zsh brace expansion before codex sees it. Outside a git repo add
 `--skip-git-repo-check`; drop `-s read-only` only for write-capable tasks.
+`service_tier=priority` is the "Fast" speed tier (1.5x speed for increased
+usage); it is the setting behind the desktop app's Speed control.
+
+For trivia, drop the effort with `-c model_reasoning_effort=low` rather than
+switching models. `gpt-5.6-sol` needs Codex CLI 0.144.0 or newer; older
+builds are rejected server-side even though the slug appears in their model
+list.
 
 ## Escalation discipline (the Sonnet-specific skill)
 

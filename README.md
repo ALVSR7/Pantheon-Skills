@@ -18,7 +18,7 @@ Running everything on your strongest model burns your subscription on work anoth
 | Fable | judgment, architecture, taste, hard debugging | grinding through a 40-file mechanical migration |
 | Opus | user-facing work, reviews, most architecture | bulk boilerplate |
 | Sonnet | day-to-day building, parallel legwork | final calls on ambiguous, expensive decisions |
-| gpt-5.5 (via the OpenAI Codex CLI) | clear-spec bulk implementation, independent reviews | taste-critical UI and copy |
+| gpt-5.6-sol (via the OpenAI Codex CLI) | clear-spec bulk implementation, independent reviews | taste-critical UI and copy |
 
 The Codex lane is the big cost lever: Codex usage is metered against your ChatGPT plan or OpenAI API credits, so heavy implementation work moves off your Claude quota (Claude still spends orchestration and review tokens around it). It's a separate budget rather than a discount, and it buys something a same-model review can't: a genuinely independent second opinion from a different frontier model. If you want the bulk lane cheaper still, route it to a smaller Codex model like gpt-5.4-mini with `-m`.
 
@@ -61,11 +61,23 @@ Then run `/reload-plugins` (or restart Claude Code) so the skills register in th
 
 ### Optional: the Codex lane
 
-The gpt-5.5 routing needs the OpenAI Codex CLI:
+The gpt-5.6-sol routing needs the OpenAI Codex CLI:
 
 ```bash
 npm install -g @openai/codex
 codex login
+```
+
+`gpt-5.6-sol` requires Codex CLI **0.144.0 or newer**. Older builds list the
+model but the API rejects it with `requires a newer version of Codex`, so run
+`codex --version` and upgrade with `npm install -g @openai/codex@latest` if
+you are behind. The skills pin the model and effort per run, but you can make
+them the default in `~/.codex/config.toml`:
+
+```toml
+model = "gpt-5.6-sol"
+model_reasoning_effort = "xhigh"
+service_tier = "priority"   # the "Fast" speed tier
 ```
 
 Optionally add the official Codex plugin for Claude Code, which provides the rescue agent and review commands the skills prefer over raw CLI calls:
@@ -114,7 +126,7 @@ Each skill ends with an "Adapting this skill" section: swap the roster for your 
 
 ## Credits
 
-Built by [ALVSR7](https://github.com/ALVSR7). The routing shape was inspired by [Theo (t3.gg) sharing his CLAUDE.md structure](https://x.com/theo/status/2072482460122964067): Fable leading, Codex handling the work it's genuinely better at. That idea got taken further here into installable skills, refined in daily use across Claude Fable, Opus, Sonnet, and OpenAI Codex (gpt-5.5). These skills were authored with Claude Code running Fable and reviewed locally with Codex before publishing.
+Built by [ALVSR7](https://github.com/ALVSR7). The routing shape was inspired by [Theo (t3.gg) sharing his CLAUDE.md structure](https://x.com/theo/status/2072482460122964067): Fable leading, Codex handling the work it's genuinely better at. That idea got taken further here into installable skills, refined in daily use across Claude Fable, Opus, Sonnet, and OpenAI Codex (gpt-5.6-sol). These skills were authored with Claude Code running Fable and reviewed locally with Codex before publishing.
 
 ## License
 
