@@ -1,6 +1,6 @@
 ---
 name: pantheon-opus
-version: 1.3.0
+version: 1.4.0
 description: |
   Model-routing kickoff for sessions led by Claude Opus. Opus does the taste
   and user-facing work, escalates frontier-difficulty calls to a stronger
@@ -23,7 +23,7 @@ escalate up instead of grinding.
 
 | Model | Strengths | Role in the pantheon |
 |-------|-----------|----------------------|
-| fable | top intelligence and taste | Escalation target: frontier-difficulty problems, final-gate reviews (if your plan includes it) |
+| fable (Claude Fable 5.1 via `model: 'fable'`) | top intelligence and taste | Escalation target: frontier-difficulty problems, final-gate reviews (if your plan includes it) |
 | **opus (you)** | high intelligence and taste | The lead: UI, copy, architecture, reviews, most building |
 | sonnet | good all-rounder, fast | Medium parallel tasks, thin orchestration hops |
 | gpt-5.6-sol via Codex CLI | strong, bills on a separate plan | Bulk clear-spec implementation, independent reviews (optional lane) |

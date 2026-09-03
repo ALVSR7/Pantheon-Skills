@@ -15,7 +15,7 @@ Running everything on your strongest model burns your subscription on work anoth
 
 | Model | Best at | Worst use of it |
 |-------|---------|-----------------|
-| Fable | judgment, architecture, taste, hard debugging | grinding through a 40-file mechanical migration |
+| Fable (Claude Fable 5.1) | judgment, architecture, taste, hard debugging | grinding through a 40-file mechanical migration |
 | Opus | user-facing work, reviews, most architecture | bulk boilerplate |
 | Sonnet | day-to-day building, parallel legwork | final calls on ambiguous, expensive decisions |
 | gpt-5.6-sol (via the OpenAI Codex CLI) | clear-spec bulk implementation, independent reviews | taste-critical UI and copy |
@@ -35,6 +35,8 @@ Pick the one matching your session's model. Each knows about the others and tell
 - **`/pantheon-fable`**: the lead does judgment, architecture, and taste work itself; bulk goes to Codex; Opus and Sonnet subagents parallelize.
 - **`/pantheon-opus`**: the lead does taste and user-facing work; frontier-difficulty problems escalate up to a Fable subagent when available; bulk goes to Codex.
 - **`/pantheon-sonnet`**: the lead does day-to-day building; hard problems and final reviews escalate to Opus or Fable; bulk goes to Codex. Includes the escalation discipline that makes a Sonnet-led setup work.
+
+The skills name models by family alias (`fable`, `opus`, `sonnet`), which is what the Agent and Workflow `model` parameter accepts. Each alias tracks the current release of its family (Claude Fable 5.1, Opus 5, and Sonnet 5 as of September 2026), so a point release needs no skill edit.
 
 Every skill degrades gracefully: without the Codex CLI the bulk lane is skipped. Without Fable on your plan, Sonnet-led sessions escalate to Opus, and Opus-led sessions fall back to self-review plus the Codex lane.
 

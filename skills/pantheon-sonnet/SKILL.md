@@ -1,6 +1,6 @@
 ---
 name: pantheon-sonnet
-version: 1.3.0
+version: 1.4.0
 description: |
   Model-routing kickoff for sessions led by Claude Sonnet. Sonnet does the
   user-facing and moderate work, escalates hard problems and final reviews to
@@ -23,7 +23,7 @@ do yourself, what you escalate up, and what you route out.
 
 | Model | Strengths | Role in the pantheon |
 |-------|-----------|----------------------|
-| fable | top intelligence and taste | Final-gate judgment, frontier-difficulty problems (if your plan includes it) |
+| fable (Claude Fable 5.1 via `model: 'fable'`) | top intelligence and taste | Final-gate judgment, frontier-difficulty problems (if your plan includes it) |
 | opus | high intelligence and taste | Escalation target, reviews, hard user-facing work |
 | **sonnet (you)** | good all-rounder, fast | The lead: most building, UI, copy, moderate logic |
 | gpt-5.6-sol via Codex CLI | strong, bills on a separate plan | Bulk clear-spec implementation, independent reviews (optional lane) |

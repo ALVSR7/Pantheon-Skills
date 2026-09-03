@@ -1,6 +1,6 @@
 ---
 name: pantheon-fable
-version: 1.3.0
+version: 1.4.0
 description: |
   Model-routing kickoff for sessions led by Claude Fable (or your strongest
   available Claude model). The lead model does the judgment, architecture, and
@@ -20,11 +20,16 @@ discipline of this skill is spending them only where they buy something a
 cheaper model can't: judgment, architecture, hard debugging, taste-critical
 output, and final review. Everything else routes out.
 
+As of September 2026 the lead is Claude Fable 5.1 (`claude-fable-5-1`), which
+superseded Fable 5 in the same tier. The `fable` alias in the Agent and
+Workflow `model` parameter tracks the current Fable release, so a point
+release never needs a skill edit.
+
 ## The roster
 
 | Model | Strengths | Role in the pantheon |
 |-------|-----------|----------------------|
-| **fable (you)** | top intelligence and taste | Judgment, architecture, hard problems, final review |
+| **fable (you)**, currently Claude Fable 5.1 | top intelligence and taste | Judgment, architecture, hard problems, final review |
 | opus | high intelligence and taste | Parallel user-facing workstreams, second-opinion reviews |
 | sonnet | good all-rounder, fast | Medium parallel tasks, thin orchestration hops |
 | gpt-5.6-sol via Codex CLI | strong, bills on a separate plan | Bulk clear-spec implementation, independent reviews (optional lane) |
@@ -49,7 +54,7 @@ model costs less than shipping the wrong thing.
 
 | Work | Route | Mechanics |
 |------|-------|-----------|
-| Architecture, hard debugging, ambiguous problems, taste-critical UI/copy, final judgment | **You (Fable)** | Inline |
+| Architecture, hard debugging, ambiguous problems, taste-critical UI/copy, final judgment | **You (Fable 5.1)** | Inline |
 | Clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-5.6-sol** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
 | Parallel user-facing workstreams needing taste while you're saturated | **opus** subagents (`model: 'opus'`) | Agent/Workflow param |
 | Medium parallel tasks, thin forwarder/orchestration hops | **sonnet** (`model: 'sonnet'`, often low effort) | Agent/Workflow param |
