@@ -1,6 +1,6 @@
 ---
 name: pantheon-fable
-version: 1.4.0
+version: 1.5.0
 description: |
   Model-routing kickoff for sessions led by Claude Fable (or your strongest
   available Claude model). The lead model does the judgment, architecture, and
@@ -32,7 +32,7 @@ release never needs a skill edit.
 | **fable (you)**, currently Claude Fable 5.1 | top intelligence and taste | Judgment, architecture, hard problems, final review |
 | opus | high intelligence and taste | Parallel user-facing workstreams, second-opinion reviews |
 | sonnet | good all-rounder, fast | Medium parallel tasks, thin orchestration hops |
-| gpt-5.6-sol via Codex CLI | strong, bills on a separate plan | Bulk clear-spec implementation, independent reviews (optional lane) |
+| gpt-6-astra (GPT-6 Astra) via Codex CLI | strong at backend, systems, computer use and long agentic runs; bills on a separate plan | Bulk clear-spec implementation, backend and systems work, independent reviews (optional lane) |
 | haiku | (skipped) | Not used in this workflow |
 
 Decision order when routes conflict for anything that ships:
@@ -54,8 +54,8 @@ model costs less than shipping the wrong thing.
 
 | Work | Route | Mechanics |
 |------|-------|-----------|
-| Architecture, hard debugging, ambiguous problems, taste-critical UI/copy, final judgment | **You (Fable 5.1)** | Inline |
-| Clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-5.6-sol** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
+| Architecture, hard debugging, ambiguous problems, frontend design and frontend code, taste-critical UI/copy, final judgment | **You (Fable 5.1)** | Inline |
+| Backend and systems work, clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-6-astra** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
 | Parallel user-facing workstreams needing taste while you're saturated | **opus** subagents (`model: 'opus'`) | Agent/Workflow param |
 | Medium parallel tasks, thin forwarder/orchestration hops | **sonnet** (`model: 'sonnet'`, often low effort) | Agent/Workflow param |
 | Anything | **Skip haiku** in this workflow | n/a |
@@ -69,11 +69,11 @@ contract binds the bulk, parallel, and review lanes.
 
 - **Thresholds that force the bulk lane** (when the Codex CLI exists):
   clear-spec mechanical work touching 5+ files, 100+ lines of boilerplate or
-  repetitive edits, or any data-crunching sweep → gpt-5.6-sol. Doing it inline
+  repetitive edits, or any data-crunching sweep → gpt-6-astra. Doing it inline
   is the exception and requires a one-line justification in the split.
 - **Parallel threshold**: 2+ independent workstreams → subagents, one Agent
   call per stream, sent in the same message so they run concurrently.
-- **The actual invocations** (exact shapes, not paraphrases): gpt-5.6-sol via
+- **The actual invocations** (exact shapes, not paraphrases): gpt-6-astra via
   the codex plugin's rescue agent, or the raw template below; Claude
   subagents via the Agent tool with `model: 'opus'` (taste workstreams) or
   `model: 'sonnet'` (medium tasks, low effort).
@@ -84,7 +84,7 @@ contract binds the bulk, parallel, and review lanes.
   produces its tool call or gets one line explaining why it stayed inline.
 - **Context budget overrides the taste exception**: once the budget trips,
   every new multi-step workstream routes to a subagent, including
-  taste-critical ones (opus for taste, gpt-5.6-sol for bulk); you judge the
+  taste-critical ones (opus for taste, gpt-6-astra for bulk); you judge the
   returned diff instead of making the edits yourself. You can't read the
   statusline meter, so use the observable proxies: the budget trips when a
   `<total_tokens>` or harness signal shows half the window spent, when the
@@ -112,7 +112,7 @@ template, with the model and effort pinned so a different local default
 can't silently reroute the lane:
 
 ```bash
-codex exec -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
+codex exec -m gpt-6-astra -c model_reasoning_effort=high \
   -c service_tier=priority -s read-only \
   -c 'mcp_servers={}' "<self-contained prompt>"
 ```
@@ -125,9 +125,19 @@ eaten by zsh brace expansion before codex sees it. Outside a git repo add
 usage); it is the setting behind the desktop app's Speed control.
 
 For trivia, drop the effort with `-c model_reasoning_effort=low` rather than
-switching models. `gpt-5.6-sol` needs Codex CLI 0.144.0 or newer; older
+switching models. `gpt-6-astra` needs Codex CLI 0.153.1 or newer; older
 builds are rejected server-side even though the slug appears in their model
 list. Skip this lane entirely if the CLI is absent.
+
+Why Astra holds the Codex lane (since Sep 4 2026): GPT-6 Astra is OpenAI's
+strongest software-engineering model to date, does the same Codex work in
+about a third of the tokens Sol needed, carries a 1M context with searchable
+context notes instead of lossy summaries, and leads on backend, systems,
+computer use and long agentic runs. Fable 5.1 still leads the coding-agent
+indexes and on frontend taste, which is why frontend design and frontend code
+stay with the Claude lead. Effort `high` is Astra's baseline; reserve `xhigh`
+and `max` for hard architecture or stubborn debugging loops. Sol remains
+selectable with `-m gpt-5.6-sol`.
 
 ## Review gates
 
@@ -138,7 +148,7 @@ list. Skip this lane entirely if the CLI is absent.
 - Judge delegated output instead of trusting it: if any route's output misses
   the bar, redo it with a smarter model.
 - Reviews of taste and user-facing work need a high-taste model as the
-  verdict (you or opus); gpt-5.6-sol only ever adds an extra perspective.
+  verdict (you or opus); gpt-6-astra only ever adds an extra perspective.
 
 ## Standing defaults
 

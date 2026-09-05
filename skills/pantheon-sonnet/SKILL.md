@@ -1,6 +1,6 @@
 ---
 name: pantheon-sonnet
-version: 1.4.0
+version: 1.5.0
 description: |
   Model-routing kickoff for sessions led by Claude Sonnet. Sonnet does the
   user-facing and moderate work, escalates hard problems and final reviews to
@@ -26,7 +26,7 @@ do yourself, what you escalate up, and what you route out.
 | fable (Claude Fable 5.1 via `model: 'fable'`) | top intelligence and taste | Final-gate judgment, frontier-difficulty problems (if your plan includes it) |
 | opus | high intelligence and taste | Escalation target, reviews, hard user-facing work |
 | **sonnet (you)** | good all-rounder, fast | The lead: most building, UI, copy, moderate logic |
-| gpt-5.6-sol via Codex CLI | strong, bills on a separate plan | Bulk clear-spec implementation, independent reviews (optional lane) |
+| gpt-6-astra (GPT-6 Astra) via Codex CLI | strong at backend, systems, computer use and long agentic runs; bills on a separate plan | Bulk clear-spec implementation, backend and systems work, independent reviews (optional lane) |
 | haiku | (skipped) | Not used in this workflow |
 
 Decision order when routes conflict for anything that ships:
@@ -51,7 +51,7 @@ a wrong call or mediocre work.
 | UI, copy, components, moderate features, refactors, day-to-day building | **You (Sonnet)** | Inline |
 | Hard problems: debugging unbroken after two real attempts, deep architecture tradeoffs, ambiguous decisions that matter | **opus** subagent (`model: 'opus'`), or `model: 'fable'` for the truly gnarly | Agent/Workflow param; hand up full context, treat the verdict as senior |
 | Final-gate review of anything that ships | **opus or fable** subagent | Same |
-| Clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-5.6-sol** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
+| Backend and systems work, clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-6-astra** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
 | Cheap parallel legwork (searches, mechanical edits with a tight spec) | **sonnet** subagents, low effort | Agent/Workflow param |
 | Anything | **Skip haiku** in this workflow | n/a |
 
@@ -68,7 +68,7 @@ escalation, bulk, and review lanes.
   attempts with no escalation call is a violation of this skill.
 - **Thresholds that force the bulk lane** (when the Codex CLI exists):
   clear-spec mechanical work touching 5+ files, 100+ lines of boilerplate,
-  or any data-crunching sweep → gpt-5.6-sol via the codex plugin's rescue agent
+  or any data-crunching sweep → gpt-6-astra via the codex plugin's rescue agent
   or the raw template below.
 - **Reviews are a different model by definition**: the final-gate review
   call goes to an opus/fable subagent or Codex; self-review never
@@ -107,7 +107,7 @@ template, with the model and effort pinned so a different local default
 can't silently reroute the lane:
 
 ```bash
-codex exec -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
+codex exec -m gpt-6-astra -c model_reasoning_effort=high \
   -c service_tier=priority -s read-only \
   -c 'mcp_servers={}' "<self-contained prompt>"
 ```
@@ -120,9 +120,19 @@ eaten by zsh brace expansion before codex sees it. Outside a git repo add
 usage); it is the setting behind the desktop app's Speed control.
 
 For trivia, drop the effort with `-c model_reasoning_effort=low` rather than
-switching models. `gpt-5.6-sol` needs Codex CLI 0.144.0 or newer; older
+switching models. `gpt-6-astra` needs Codex CLI 0.153.1 or newer; older
 builds are rejected server-side even though the slug appears in their model
 list.
+
+Why Astra holds the Codex lane (since Sep 4 2026): GPT-6 Astra is OpenAI's
+strongest software-engineering model to date, does the same Codex work in
+about a third of the tokens Sol needed, carries a 1M context with searchable
+context notes instead of lossy summaries, and leads on backend, systems,
+computer use and long agentic runs. Fable 5.1 still leads the coding-agent
+indexes and on frontend taste, which is why frontend design and frontend code
+stay with the Claude lead. Effort `high` is Astra's baseline; reserve `xhigh`
+and `max` for hard architecture or stubborn debugging loops. Sol remains
+selectable with `-m gpt-5.6-sol`.
 
 ## Escalation discipline (the Sonnet-specific skill)
 
