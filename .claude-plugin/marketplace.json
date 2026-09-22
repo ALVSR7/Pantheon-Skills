@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "pantheon",
   "metadata": {
-    "description": "Pantheon: model-routing skills for Claude Code, one kickoff skill per lead model (Fable, Opus, Sonnet), with an optional Codex (gpt-6-sol) bulk lane."
+    "description": "Pantheon: model-routing skills for Claude Code, one kickoff skill per lead model (Fable, Opus, Sonnet), with an optional Codex (gpt-6-astra) bulk lane."
   },
   "owner": {
     "name": "ALVSR7"

@@ -1,6 +1,6 @@
 ---
 name: pantheon-opus
-version: 1.7.0
+version: 1.7.1
 description: |
   Model-routing kickoff for sessions led by Claude Opus. Opus does the taste
   and user-facing work, escalates frontier-difficulty calls to a stronger
@@ -31,7 +31,7 @@ tracks the current Opus release, so a point release never needs a skill edit.
 | fable (Claude Fable 5.1 via `model: 'fable'`) | top intelligence and taste | Escalation target: frontier-difficulty problems, final-gate reviews (if your plan includes it) |
 | **opus (you)**, currently Claude Opus 5.5 | high intelligence and taste | The lead: UI, copy, architecture, reviews, most building |
 | sonnet | good all-rounder, fast | Medium parallel tasks, thin orchestration hops |
-| gpt-6-sol (GPT-6 Sol; Astra and Luna on the same CLI) via Codex CLI | strong at backend, systems, computer use and long agentic runs; bills on a separate plan | Bulk clear-spec implementation, backend and systems work, independent reviews (optional lane) |
+| gpt-6-astra (GPT-6 Astra; Sol and Luna as cheaper tiers on the same CLI) via Codex CLI | strong at backend, systems, computer use and long agentic runs; bills on a separate plan | Bulk clear-spec implementation, backend and systems work, independent reviews (optional lane) |
 | haiku | (skipped) | Not used in this workflow |
 
 Decision order when routes conflict for anything that ships:
@@ -55,7 +55,7 @@ a wrong call.
 |------|-------|-----------|
 | UI, copy, API design, reviews, normal architecture, most building | **You (Opus 5.5)** | Inline |
 | Frontier-difficulty problems: debugging unbroken after two real attempts, deep architecture tradeoffs, final-gate review of work that ships | **fable** subagent (`model: 'fable'`) when available; otherwise your best self-review plus the Codex lane | Agent/Workflow param; hand up full context, treat the verdict as senior |
-| Backend and systems work, clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-6-sol** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
+| Backend and systems work, clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-6-astra** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
 | Medium parallel tasks, thin forwarder/orchestration hops | **sonnet** (`model: 'sonnet'`, often low effort) | Agent/Workflow param |
 | Anything | **Skip haiku** in this workflow | n/a |
 
@@ -80,9 +80,9 @@ the escalation, bulk, and review lanes.
   escalation call is a violation of this skill.
 - **Thresholds that force the bulk lane** (when the Codex CLI exists):
   clear-spec mechanical work touching 5+ files, 100+ lines of boilerplate,
-  or any data-crunching sweep → gpt-6-sol. Inline is the exception and
+  or any data-crunching sweep → gpt-6-astra. Inline is the exception and
   requires a one-line justification in the split.
-- **The actual invocations**: gpt-6-sol via the codex plugin's rescue agent or
+- **The actual invocations**: gpt-6-astra via the codex plugin's rescue agent or
   the raw template below; escalation and legwork via the Agent tool with
   `model: 'fable'` / `model: 'sonnet'`.
 - **Capability preflight** (once, at kickoff): `codex --version` via the
@@ -119,7 +119,7 @@ template, with the model and effort pinned so a different local default
 can't silently reroute the lane:
 
 ```bash
-codex exec -m gpt-6-sol -c model_reasoning_effort=xhigh \
+codex exec -m gpt-6-astra -c model_reasoning_effort=high \
   -c service_tier=priority -s read-only \
   -c 'mcp_servers={}' "<self-contained prompt>"
 ```
@@ -132,22 +132,22 @@ eaten by zsh brace expansion before codex sees it. Outside a git repo add
 usage); it is the setting behind the desktop app's Speed control.
 
 For trivia, drop the effort with `-c model_reasoning_effort=low` rather than
-switching models. `gpt-6-sol` needs Codex CLI 0.155.1 or newer; older
+switching models. `gpt-6-astra` needs Codex CLI 0.155.1 or newer; older
 builds are rejected server-side even though the slug appears in their model
 list.
 
-Why Sol holds the Codex lane (since Sep 22 2026): GPT-6 Sol reaches
-Astra-level reliability at half the price of the 5.6 generation, makes about
-half the mistakes of GPT-5.6 Sol, and is the GPT-6 model OpenAI positions for
-complex coding and agentic work, so it is the default for bulk
-implementation. Escalate to **GPT-6 Astra** (`-m gpt-6-astra`), still
-OpenAI's strongest model, for hard backend and systems problems, long
-agentic runs, and computer use. Drop to **GPT-6 Luna** (`-m gpt-6-luna`) for
-high-volume work with a clear goal: summarizing, extraction, classification
-sweeps. Fable still leads the coding-agent indexes and on frontend taste,
-which is why frontend design and frontend code stay with the Claude lead.
-Effort `xhigh` is the house setting for Sol; drop to `high` or `low` for
-simple passes rather than switching models.
+Why Astra holds the Codex lane (re-confirmed Sep 22 2026 with Artificial
+Analysis scores): on the Coding Agent Index GPT-6 Astra scores 62, level
+with Fable 5.1, while the newer GPT-6 Sol scores 57 and GPT-6 Luna 41. Sol
+and Luna are cheaper per token, but Astra already does Codex work in about a
+third of the tokens the 5.6 generation needed, so the stronger model stays
+the default. Drop to **GPT-6 Sol** (`-m gpt-6-sol`) for large mechanical
+sweeps where volume matters more than judgment, and to **GPT-6 Luna**
+(`-m gpt-6-luna`) for high-volume work with a clear goal: summarizing,
+extraction, classification. Fable still leads on frontend taste, which is why
+frontend design and frontend code stay with the Claude lead. Effort `high` is
+Astra's baseline; reserve `xhigh` and `max` for hard architecture or stubborn
+debugging loops.
 
 ## Review gates
 
