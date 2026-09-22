@@ -1,6 +1,6 @@
 ---
 name: pantheon-fable
-version: 1.5.0
+version: 1.6.0
 description: |
   Model-routing kickoff for sessions led by Claude Fable (or your strongest
   available Claude model). The lead model does the judgment, architecture, and
@@ -30,7 +30,7 @@ release never needs a skill edit.
 | Model | Strengths | Role in the pantheon |
 |-------|-----------|----------------------|
 | **fable (you)**, currently Claude Fable 5.1 | top intelligence and taste | Judgment, architecture, hard problems, final review |
-| opus | high intelligence and taste | Parallel user-facing workstreams, second-opinion reviews |
+| opus (Claude Opus 5.5 via `model: 'opus'`) | high intelligence and taste | Parallel user-facing workstreams, second-opinion reviews |
 | sonnet | good all-rounder, fast | Medium parallel tasks, thin orchestration hops |
 | gpt-6-astra (GPT-6 Astra) via Codex CLI | strong at backend, systems, computer use and long agentic runs; bills on a separate plan | Bulk clear-spec implementation, backend and systems work, independent reviews (optional lane) |
 | haiku | (skipped) | Not used in this workflow |

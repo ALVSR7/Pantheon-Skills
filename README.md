@@ -16,7 +16,7 @@ Running everything on your strongest model burns your subscription on work anoth
 | Model | Best at | Worst use of it |
 |-------|---------|-----------------|
 | Fable (Claude Fable 5.1) | judgment, architecture, taste, hard debugging | grinding through a 40-file mechanical migration |
-| Opus | user-facing work, reviews, most architecture | bulk boilerplate |
+| Opus (Claude Opus 5.5) | user-facing work, reviews, most architecture | bulk boilerplate |
 | Sonnet | day-to-day building, parallel legwork | final calls on ambiguous, expensive decisions |
 | GPT-6 Astra, `gpt-6-astra` (via the OpenAI Codex CLI) | backend, systems, clear-spec bulk implementation, computer use, independent reviews | taste-critical UI, frontend design and copy |
 
@@ -36,7 +36,7 @@ Pick the one matching your session's model. Each knows about the others and tell
 - **`/pantheon-opus`**: the lead does taste and user-facing work; frontier-difficulty problems escalate up to a Fable subagent when available; bulk goes to Codex.
 - **`/pantheon-sonnet`**: the lead does day-to-day building; hard problems and final reviews escalate to Opus or Fable; bulk goes to Codex. Includes the escalation discipline that makes a Sonnet-led setup work.
 
-The skills name models by family alias (`fable`, `opus`, `sonnet`), which is what the Agent and Workflow `model` parameter accepts. Each alias tracks the current release of its family (Claude Fable 5.1, Opus 5, and Sonnet 5 as of September 2026), so a point release needs no skill edit.
+The skills name models by family alias (`fable`, `opus`, `sonnet`), which is what the Agent and Workflow `model` parameter accepts. Each alias tracks the current release of its family (Claude Fable 5.1, Opus 5.5, and Sonnet 5 as of September 2026), so a point release needs no skill edit.
 
 Every skill degrades gracefully: without the Codex CLI the bulk lane is skipped. Without Fable on your plan, Sonnet-led sessions escalate to Opus, and Opus-led sessions fall back to self-review plus the Codex lane.
 
