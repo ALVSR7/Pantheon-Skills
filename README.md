@@ -18,7 +18,7 @@ Running everything on your strongest model burns your subscription on work anoth
 | Fable (Claude Fable 5.1) | judgment, architecture, taste, hard debugging | grinding through a 40-file mechanical migration |
 | Opus (Claude Opus 5.5) | user-facing work, reviews, most architecture | bulk boilerplate |
 | Sonnet | day-to-day building, parallel legwork | final calls on ambiguous, expensive decisions |
-| GPT-6 Astra, `gpt-6-astra` (via the OpenAI Codex CLI) | backend, systems, clear-spec bulk implementation, computer use, independent reviews | taste-critical UI, frontend design and copy |
+| GPT-6 Sol, `gpt-6-sol` (via the OpenAI Codex CLI; Astra for the hardest backend work, Luna for high-volume passes) | clear-spec bulk implementation, backend, systems, independent reviews | taste-critical UI, frontend design and copy |
 
 The Codex lane is the big cost lever: Codex usage is metered against your ChatGPT plan or OpenAI API credits, so heavy implementation work moves off your Claude quota (Claude still spends orchestration and review tokens around it). It's a separate budget rather than a discount, and it buys something a same-model review can't: a genuinely independent second opinion from a different frontier model. If you want the bulk lane cheaper still, route it to a smaller Codex model like gpt-5.4-mini with `-m`.
 
@@ -63,22 +63,22 @@ Then run `/reload-plugins` (or restart Claude Code) so the skills register in th
 
 ### Optional: the Codex lane
 
-The gpt-6-astra routing needs the OpenAI Codex CLI:
+The gpt-6-sol routing needs the OpenAI Codex CLI:
 
 ```bash
 npm install -g @openai/codex
 codex login
 ```
 
-`gpt-6-astra` requires Codex CLI **0.153.1 or newer**. Older builds list the
+The GPT-6 Sol and Luna models (released Sep 22 2026) need Codex CLI **0.155.1 or newer**. Older builds list the
 model but the API rejects it with `requires a newer version of Codex`, so run
 `codex --version` and upgrade with `npm install -g @openai/codex@latest` if
 you are behind. The skills pin the model and effort per run, but you can make
 them the default in `~/.codex/config.toml`:
 
 ```toml
-model = "gpt-6-astra"            # GPT-6 Astra
-model_reasoning_effort = "high"   # Astra baseline; xhigh/max for hard loops
+model = "gpt-6-sol"              # GPT-6 Sol; -m gpt-6-astra or -m gpt-6-luna per run
+model_reasoning_effort = "xhigh"  # drop to high or low for simple passes
 service_tier = "priority"         # the "Fast" speed tier
 ```
 
@@ -128,7 +128,7 @@ Each skill ends with an "Adapting this skill" section: swap the roster for your 
 
 ## Credits
 
-Built by [ALVSR7](https://github.com/ALVSR7). The routing shape was inspired by [Theo (t3.gg) sharing his CLAUDE.md structure](https://x.com/theo/status/2072482460122964067): Fable leading, Codex handling the work it's genuinely better at. That idea got taken further here into installable skills, refined in daily use across Claude Fable, Opus, Sonnet, and OpenAI Codex (GPT-6 Astra). These skills were authored with Claude Code running Fable and reviewed locally with Codex before publishing.
+Built by [ALVSR7](https://github.com/ALVSR7). The routing shape was inspired by [Theo (t3.gg) sharing his CLAUDE.md structure](https://x.com/theo/status/2072482460122964067): Fable leading, Codex handling the work it's genuinely better at. That idea got taken further here into installable skills, refined in daily use across Claude Fable, Opus, Sonnet, and OpenAI Codex (GPT-6 Sol, Astra and Luna). These skills were authored with Claude Code running Fable and reviewed locally with Codex before publishing.
 
 ## License
 
