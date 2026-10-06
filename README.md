@@ -15,10 +15,12 @@ Running everything on your strongest model burns your subscription on work anoth
 
 | Model | Best at | Worst use of it |
 |-------|---------|-----------------|
-| Fable (Claude Fable 5.1) | judgment, architecture, taste, hard debugging | grinding through a 40-file mechanical migration |
-| Opus (Claude Opus 5.5) | user-facing work, reviews, most architecture | bulk boilerplate |
+| Opus (Claude Opus 5.5), **the default lead** | judgment, architecture, debugging, planning, reviews, most building | bulk boilerplate |
+| Fable (Claude Fable 5.1) | taste: frontend design, art direction, final-gate reviews of client-facing work | grinding through a 40-file mechanical migration |
 | Sonnet | day-to-day building, parallel legwork | final calls on ambiguous, expensive decisions |
 | GPT-6 Astra, `gpt-6-astra` (via the OpenAI Codex CLI; Sol and Luna as cheaper tiers for high-volume passes; GPT-6.1 Sol, `gpt-6.1-sol`, for bug fixing) | backend, systems, clear-spec bulk implementation, independent reviews | taste-critical UI, frontend design and copy |
+
+**Opus 5.5 is the leading model, with Fable 5.1 second.** Since September 22 2026, Opus 5.5 tops the Artificial Analysis Intelligence Index (58 to Fable 5.1's 53) at less than half Fable's cost, so it leads by default. Fable 5.1 matches it on hard problems and leads on taste, which makes it the escalation for frontend design and the final review of anything a client will see.
 
 The Codex lane is the big cost lever: Codex usage is metered against your ChatGPT plan or OpenAI API credits, so heavy implementation work moves off your Claude quota (Claude still spends orchestration and review tokens around it). It's a separate budget rather than a discount, and it buys something a same-model review can't: a genuinely independent second opinion from a different frontier model. If you want the bulk lane cheaper still, route it to a smaller Codex model like gpt-5.4-mini with `-m`.
 
@@ -32,8 +34,8 @@ Three rules hold the system together:
 
 Pick the one matching your session's model. Each knows about the others and tells the agent to switch if it detects a mismatch.
 
-- **`/pantheon-fable`**: the lead does judgment, architecture, and taste work itself; bulk goes to Codex; Opus and Sonnet subagents parallelize.
-- **`/pantheon-opus`**: the lead does taste and user-facing work; frontier-difficulty problems escalate up to a Fable subagent when available; bulk goes to Codex.
+- **`/pantheon-opus`** (recommended default): Opus leads builds, logic, planning, and most judgment; taste-critical design and final client-facing reviews escalate to a Fable subagent when available; bulk goes to Codex.
+- **`/pantheon-fable`**: for sessions you run on Fable, usually design-heavy work. The lead does judgment, architecture, and taste work itself; bulk goes to Codex; Opus and Sonnet subagents parallelize.
 - **`/pantheon-sonnet`**: the lead does day-to-day building; hard problems and final reviews escalate to Opus or Fable; bulk goes to Codex. Includes the escalation discipline that makes a Sonnet-led setup work.
 
 The skills name models by family alias (`fable`, `opus`, `sonnet`), which is what the Agent and Workflow `model` parameter accepts. Each alias tracks the current release of its family (Claude Fable 5.1, Opus 5.5, and Sonnet 5 as of September 2026), so a point release needs no skill edit.
