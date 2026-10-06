@@ -18,7 +18,7 @@ Running everything on your strongest model burns your subscription on work anoth
 | Fable (Claude Fable 5.1) | judgment, architecture, taste, hard debugging | grinding through a 40-file mechanical migration |
 | Opus (Claude Opus 5.5) | user-facing work, reviews, most architecture | bulk boilerplate |
 | Sonnet | day-to-day building, parallel legwork | final calls on ambiguous, expensive decisions |
-| GPT-6 Astra, `gpt-6-astra` (via the OpenAI Codex CLI; Sol and Luna as cheaper tiers for high-volume passes) | backend, systems, clear-spec bulk implementation, independent reviews | taste-critical UI, frontend design and copy |
+| GPT-6 Astra, `gpt-6-astra` (via the OpenAI Codex CLI; Sol and Luna as cheaper tiers for high-volume passes; GPT-6.1 Sol, `gpt-6.1-sol`, for bug fixing) | backend, systems, clear-spec bulk implementation, independent reviews | taste-critical UI, frontend design and copy |
 
 The Codex lane is the big cost lever: Codex usage is metered against your ChatGPT plan or OpenAI API credits, so heavy implementation work moves off your Claude quota (Claude still spends orchestration and review tokens around it). It's a separate budget rather than a discount, and it buys something a same-model review can't: a genuinely independent second opinion from a different frontier model. If you want the bulk lane cheaper still, route it to a smaller Codex model like gpt-5.4-mini with `-m`.
 
@@ -77,7 +77,7 @@ you are behind. The skills pin the model and effort per run, but you can make
 them the default in `~/.codex/config.toml`:
 
 ```toml
-model = "gpt-6-astra"            # GPT-6 Astra; -m gpt-6-sol or -m gpt-6-luna per run
+model = "gpt-6-astra"            # GPT-6 Astra; -m gpt-6.1-sol for bug fixes, -m gpt-6-sol or -m gpt-6-luna per run
 model_reasoning_effort = "high"   # Astra baseline; xhigh/max for hard loops
 service_tier = "priority"         # the "Fast" speed tier
 ```

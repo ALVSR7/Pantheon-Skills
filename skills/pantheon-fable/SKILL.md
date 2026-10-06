@@ -1,6 +1,6 @@
 ---
 name: pantheon-fable
-version: 1.7.1
+version: 1.8.0
 description: |
   Model-routing kickoff for sessions led by Claude Fable (or your strongest
   available Claude model). The lead model does the judgment, architecture, and
@@ -56,6 +56,7 @@ model costs less than shipping the wrong thing.
 |------|-------|-----------|
 | Architecture, hard debugging, ambiguous problems, frontend design and frontend code, taste-critical UI/copy, final judgment | **You (Fable 5.1)** | Inline |
 | Backend and systems work, clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-6-astra** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
+| Bug fixing handed to Codex: reproducible bugs, failing tests, root-cause-and-fix passes | **gpt-6.1-sol** if the Codex CLI is installed | Rescue agent with `--model gpt-6.1-sol --effort high` in the prompt, or the `codex exec` template with `-m gpt-6.1-sol` |
 | Parallel user-facing workstreams needing taste while you're saturated | **opus** subagents (`model: 'opus'`) | Agent/Workflow param |
 | Medium parallel tasks, thin forwarder/orchestration hops | **sonnet** (`model: 'sonnet'`, often low effort) | Agent/Workflow param |
 | Anything | **Skip haiku** in this workflow | n/a |
@@ -141,6 +142,11 @@ extraction, classification. Fable still leads on frontend taste, which is why
 frontend design and frontend code stay with the Claude lead. Effort `high` is
 Astra's baseline; reserve `xhigh` and `max` for hard architecture or stubborn
 debugging loops.
+
+Bug fixing is the exception (Oct 5 2026): **GPT-6.1 Sol** (`gpt-6.1-sol`)
+replaces Astra for every Codex bug-fix pass. Pass `--model gpt-6.1-sol
+--effort high` to the rescue agent, or swap `-m gpt-6.1-sol` into the exec
+template. Astra keeps bulk implementation and reviews.
 
 ## Review gates
 
