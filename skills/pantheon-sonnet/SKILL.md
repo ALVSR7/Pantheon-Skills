@@ -1,6 +1,6 @@
 ---
 name: pantheon-sonnet
-version: 1.10.0
+version: 1.11.0
 description: |
   Model-routing kickoff for sessions led by Claude Sonnet. Sonnet does the
   user-facing and moderate work, escalates hard problems and final reviews to
@@ -23,8 +23,8 @@ do yourself, what you escalate up, and what you route out.
 
 | Model | Strengths | Role in the pantheon |
 |-------|-----------|----------------------|
-| fable (Claude Fable 5.1 via `model: 'fable'`) | top intelligence and taste | Final-gate judgment, frontier-difficulty problems (if your plan includes it) |
-| opus (Claude Opus 5.5 via `model: 'opus'`) | high intelligence and taste | Escalation target, reviews, hard user-facing work |
+| opus (Claude Opus 5.5 via `model: 'opus'`) | top intelligence (leads the AA index), high taste | First escalation target: hard problems, reviews, hard user-facing work |
+| fable (Claude Fable 5.1 via `model: 'fable'`) | top taste, intelligence level with Opus, over twice its cost | Taste escalation: frontend design, final-gate review of client-facing work (if your plan includes it) |
 | **sonnet (you)** | good all-rounder, fast | The lead: most building, UI, copy, moderate logic |
 | gpt-6-astra (GPT-6 Astra; Sol and Luna as cheaper tiers on the same CLI) via Codex CLI | strong at backend, systems, computer use and long agentic runs; bills on a separate plan | Bulk clear-spec implementation, backend and systems work, independent reviews (optional lane) |
 | haiku | (skipped) | Not used in this workflow |
@@ -49,8 +49,8 @@ a wrong call or mediocre work.
 | Work | Route | Mechanics |
 |------|-------|-----------|
 | UI, copy, components, moderate features, refactors, day-to-day building | **You (Sonnet)** | Inline |
-| Hard problems: debugging unbroken after two real attempts, deep architecture tradeoffs, ambiguous decisions that matter | **opus** subagent (`model: 'opus'`), or `model: 'fable'` for the truly gnarly | Agent/Workflow param; hand up full context, treat the verdict as senior |
-| Final-gate review of anything that ships | **opus or fable** subagent | Same |
+| Hard problems: debugging unbroken after two real attempts, deep architecture tradeoffs, ambiguous decisions that matter | **opus** subagent (`model: 'opus'`), or `model: 'fable'` when the problem is design or taste | Agent/Workflow param; hand up full context, treat the verdict as senior |
+| Final-gate review of anything that ships | **opus** subagent; **fable** for client-facing design work | Same |
 | Backend and systems work, clear-spec bulk implementation, migrations, data analysis, mechanical sweeps | **gpt-6-astra** if the Codex CLI is installed | The codex plugin's rescue agent, or raw `codex exec` via Bash (notes below) |
 | Bug fixing handed to Codex: reproducible bugs, failing tests, root-cause-and-fix passes | **gpt-6.1-sol** if the Codex CLI is installed | Rescue agent with `--model gpt-6.1-sol --effort high` in the prompt, or the `codex exec` template with `-m gpt-6.1-sol` |
 | Cheap parallel legwork (searches, mechanical edits with a tight spec) | **sonnet** subagents, low effort | Agent/Workflow param |
