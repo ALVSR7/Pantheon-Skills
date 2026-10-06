@@ -92,7 +92,7 @@ Optionally add the official Codex plugin for Claude Code, which provides the res
 /plugin install codex@openai-codex
 ```
 
-One gotcha the skills already know about: headless `codex exec` calls from an agent can hang forever waiting on interactive MCP auth. The skills pass `-c mcp_servers={}` to avoid it; keep that flag if you script your own calls.
+Two gotchas the skills already handle, worth copying if you script your own calls: headless `codex exec` runs can hang forever waiting on interactive MCP auth, so pass `-c 'mcp_servers={}'`; and a run launched from an agent's shell (especially in the background) inherits an open stdin and blocks waiting for input, so end every command with `< /dev/null` and log to a file instead of piping through `head` or `tail`.
 
 ### Make it a habit (recommended)
 

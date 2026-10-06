@@ -1,6 +1,6 @@
 ---
 name: pantheon-sonnet
-version: 1.9.0
+version: 1.10.0
 description: |
   Model-routing kickoff for sessions led by Claude Sonnet. Sonnet does the
   user-facing and moderate work, escalates hard problems and final reviews to
@@ -74,6 +74,12 @@ escalation, bulk, and review lanes.
 - **Reviews are a different model by definition**: the final-gate review
   call goes to an opus/fable subagent or Codex; self-review never
   satisfies the gate.
+- **Close stdin on every headless Codex run**: `codex exec` launched from
+  an agent's shell, especially in the background, inherits an open stdin
+  and blocks forever waiting for input. Always end the command with
+  `< /dev/null`, write output to a log file (`> <log> 2>&1`) instead of
+  piping through `head` or `tail`, and poll the log. A run that has printed
+  nothing for several minutes is hung: kill it and rerun with stdin closed.
 - **Capability preflight** (once, at kickoff): keep both CLIs current, since
   new models ship faster than installs update. Run `codex --version` and
   `npm view @openai/codex version`; if the install is behind, run
@@ -122,7 +128,7 @@ can't silently reroute the lane:
 ```bash
 codex exec -m gpt-6-astra -c model_reasoning_effort=high \
   -c service_tier=priority -s read-only \
-  -c 'mcp_servers={}' "<self-contained prompt>"
+  -c 'mcp_servers={}' "<self-contained prompt>" < /dev/null
 ```
 
 Headless `codex exec` runs can hang forever waiting on MCP auth, which is
