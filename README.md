@@ -70,10 +70,11 @@ npm install -g @openai/codex
 codex login
 ```
 
-The GPT-6 Sol and Luna models (released Sep 22 2026) need Codex CLI **0.155.1 or newer**. Older builds list the
-model but the API rejects it with `requires a newer version of Codex`, so run
-`codex --version` and upgrade with `npm install -g @openai/codex@latest` if
-you are behind. The skills pin the model and effort per run, but you can make
+New Codex models (GPT-6.1 Sol most recently) ship faster than installs update, and older builds list the
+model but the API rejects it as unavailable or `requires a newer version of Codex`. The skills handle this: the kickoff
+preflight compares `codex --version` against `npm view @openai/codex version` and upgrades with
+`npm install -g @openai/codex@latest` when behind, runs `claude update`, and any model-unavailable error triggers one
+update-and-retry before it is reported. The skills pin the model and effort per run, but you can make
 them the default in `~/.codex/config.toml`:
 
 ```toml

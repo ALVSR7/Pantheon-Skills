@@ -1,6 +1,6 @@
 ---
 name: pantheon-sonnet
-version: 1.8.0
+version: 1.9.0
 description: |
   Model-routing kickoff for sessions led by Claude Sonnet. Sonnet does the
   user-facing and moderate work, escalates hard problems and final reviews to
@@ -74,8 +74,20 @@ escalation, bulk, and review lanes.
 - **Reviews are a different model by definition**: the final-gate review
   call goes to an opus/fable subagent or Codex; self-review never
   satisfies the gate.
-- **Capability preflight** (once, at kickoff): check `codex --version`; if
-  a lane is unavailable, say so in the split and name what absorbs it.
+- **Capability preflight** (once, at kickoff): keep both CLIs current, since
+  new models ship faster than installs update. Run `codex --version` and
+  `npm view @openai/codex version`; if the install is behind, run
+  `npm install -g @openai/codex@latest` before routing anything (Homebrew
+  cask installs: `brew upgrade --cask codex`). Then run `claude update`; if
+  it installs a newer build, tell the user to restart the session to load
+  it. If a lane is still unavailable, say so in the split and name what
+  absorbs it. A missing lane never silently becomes "I'll do it all myself."
+- **Model-unavailable errors mean update first**: when Codex rejects a model
+  ("not available", "model not found", "not supported on your account",
+  "requires a newer version of Codex"), the usual cause is a stale CLI.
+  Update Codex as above, confirm with `codex --version`, and re-run the same
+  command once with the same model. Report the exact error to the user only
+  if the retry also fails. Never swap in a different model silently.
 - **Route or justify**: every task the split assigned elsewhere either
   produces its tool call or gets one line explaining why it stayed inline.
 - **Context budget overrides the inline default**: once the budget trips,
@@ -121,9 +133,8 @@ eaten by zsh brace expansion before codex sees it. Outside a git repo add
 usage); it is the setting behind the desktop app's Speed control.
 
 For trivia, drop the effort with `-c model_reasoning_effort=low` rather than
-switching models. `gpt-6-astra` needs Codex CLI 0.155.1 or newer; older
-builds are rejected server-side even though the slug appears in their model
-list.
+switching models. New Codex models need a recent CLI; older builds list the slug but the
+server rejects it. The preflight and update-first rules above cover this.
 
 Why Astra holds the Codex lane (re-confirmed Sep 22 2026 with Artificial
 Analysis scores): on the Coding Agent Index GPT-6 Astra scores 62, level
